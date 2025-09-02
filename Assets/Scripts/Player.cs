@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, IKitchenObjectParent
 {
     
     public static Player Instance { get; private set; }
@@ -12,7 +12,7 @@ public class Player : MonoBehaviour
     public event EventHandler<OnSelectedCounterChangedEventArgs> OnSelectedCounterChanged;
     public class OnSelectedCounterChangedEventArgs : EventArgs
     {
-        public ClearCounter selectedCounter;
+        public IkitchenObjectParent selectedCounter;
     }
     
     
@@ -22,7 +22,7 @@ public class Player : MonoBehaviour
 
     private bool isWalking;
     private Vector3 lastInteractDir;
-    private ClearCounter selectedCounter;
+    private IkitchenObjectParent selectedCounter;
 
     private void Awake()
     {
@@ -42,7 +42,7 @@ public class Player : MonoBehaviour
     {
         if (selectedCounter != null)
         {
-            selectedCounter.Interact();
+            selectedCounter.Interact(this);
         }
     }
 
@@ -71,7 +71,7 @@ public class Player : MonoBehaviour
         float interactDistance = 2f;
         if (Physics.Raycast(transform.position, lastInteractDir, out RaycastHit raycastHit, interactDistance, countersLayerMask))
         {
-            if (raycastHit.transform.TryGetComponent(out ClearCounter clearCounter))
+            if (raycastHit.transform.TryGetComponent(out IkitchenObjectParent clearCounter))
             {
                 //Has Clear Counter
                 if (clearCounter != selectedCounter)
@@ -146,7 +146,7 @@ public class Player : MonoBehaviour
     }
 
 
-    private void SetSelectedCounter (ClearCounter selectedCounter)
+    private void SetSelectedCounter (IkitchenObjectParent selectedCounter)
     {
         this.selectedCounter = selectedCounter;
 
